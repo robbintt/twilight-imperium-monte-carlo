@@ -2,24 +2,15 @@ import copy
 import random
 import json
 
+# Rough tally for now.
+death_tally = [0,0,0]
+
 ship_catalog_file = "./ship_models.json"
+fleet_1_file = "./test_fleet_1.json"
+fleet_2_file = "./test_fleet_2.json"
+
 iterations = 10000
 range_size = 12 # define the size of the die
-
-fleet1 = { 
-    "loss priority" : [ "Fighter","Destroyer","Carrier","Cruiser","Dreadnought","War Sun","Custom Ship" ],
-    "extra hits" : None, 
-    "hit priority": "sustain", 
-    "Dreadnought" : 1 }
-
-fleet2 = { 
-    "loss priority" : [ "Fighter","Destroyer","Carrier","Cruiser","Dreadnought","War Sun","Custom Ship" ],
-    "extra hits" : None, 
-    "hit priority": "protect", 
-    "Carrier" : 1, 
-    "Fighter" : 4 }
-
-
 
 
 def import_json ( target_file ):
@@ -94,7 +85,7 @@ def build_extra_hits ( fleet ):
 
     If this value is specified already, skip this.
     """
-    if fleet['extra hits'] == None: # Only do this if none are passed.
+    if fleet['extra hits'] == "None": # Only do this if none are passed... use string "none" because json requires strings.
         fleet['extra hits'] = fleet.get('War Sun',0)+fleet.get('Dreadnought',0)+fleet.get('Custom Ship',0)
 
     return fleet
@@ -102,8 +93,8 @@ def build_extra_hits ( fleet ):
 
 def fleet_damage_outcomes( target_fleet, hitrange, ship_catalog ):
 
-    build_extra_hits( target_fleet )
 
+    build_extra_hits( target_fleet )
 
     # Use a hit prioritization method to calculate remaining possible fleets.
     fleet_outcomes = []
@@ -126,6 +117,17 @@ def fleet_damage_outcomes( target_fleet, hitrange, ship_catalog ):
 
     return fleet_outcomes
 
+def fleet_survival_check( fleet, ship_catalog ):
+    """
+    If no ships remain that are in the catalog, then the fleet is destroyed.
+    """
+
+    surviving_ships = 0
+    for each in ship_catalog.keys():
+        surviving_ships += fleet.get(each,0)
+    
+    return surviving_ships
+
 
 def play_round( fleet1, fleet2, iterations, range_size, ship_catalog ):
     """
@@ -144,51 +146,41 @@ def play_round( fleet1, fleet2, iterations, range_size, ship_catalog ):
     fleet1_outcomes = fleet_damage_outcomes( fleet1, hitrange2, ship_catalog )
     fleet2_outcomes = fleet_damage_outcomes( fleet2, hitrange1, ship_catalog )
 
-    """
-    # Use a hit prioritization method to calculate remaining possible fleets.
-    fleet2_outcomes = []
-    for each in range(0,len(hitrange1)):
-        fleet2_t = copy.deepcopy(fleet2)
-        # If we sustain, then sustain all hits first
-        if fleet2_t['hit priority'] == "sustain":
-            while fleet2_t['extra hits'] > 0 and each > 0:
-                fleet2_t['extra hits'] = fleet2['extra hits'] - 1
-                each -= 1
-        for item in fleet2_t['loss priority']: # Silently ends if fleet destroyed.
-            while fleet2_t.get(item,0) > 0 and each > 0:
-                if item in [ "Dreadnought", "War Sun", "Custom Ship" ] and fleet2_t['extra hits'] > 0:
-                    fleet2_t['extra hits'] = fleet2_t['extra hits'] - 1
-                    each -= 1
-                else:
-                    fleet2_t[item] = fleet2_t[item] - 1
-                    each -= 1
-        fleet2_outcomes.append(fleet2_t)
-
-    fleet1_outcomes = []
-    for each in range(0,len(hitrange2)):
-        fleet1_t = copy.deepcopy(fleet1)
-        # If we sustain, then sustain all hits first
-        if fleet1_t['hit priority'] == "sustain":
-            while fleet1_t['extra hits'] > 0 and each > 0:
-                fleet1_t['extra hits'] = fleet1['extra hits'] - 1
-                each -= 1
-        for item in fleet1_t['loss priority']: # Silently ends if fleet destroyed.
-            while fleet1_t.get(item,0) > 0 and each > 0:
-                if item in [ "Dreadnought", "War Sun", "Custom Ship" ] and fleet1_t['extra hits'] > 0:
-                    fleet1_t['extra hits'] = fleet1_t['extra hits'] - 1
-                    each -= 1
-                else:
-                    fleet1_t[item] = fleet1_t[item] - 1
-                    each -= 1
-        fleet1_outcomes.append(fleet1_t)
-    """
-
-
     return ( fleet1_outcomes, fleet2_outcomes )
 
 
+def play_to_death( fleet1, fleet2, iterations, range_size, ship_catalog, death_tally ):
+
+    fleet1_outcomes, fleet2_outcomes = play_round( fleet1, fleet2, iterations, range_size, ship_catalog )
+
+    # Discrete list of all outcomes.
+    all_outcomes = []
+    for each in fleet1_outcomes:
+        for item in fleet2_outcomes:
+            all_outcomes.append( [each, item] )
+
+    # Strip out the miss/miss scenario at all times.
+    all_outcomes.pop(0)
+
+    for each in all_outcomes:
+        if fleet_survival_check(each[0], ship_catalog) > 0 and fleet_survival_check(each[1], ship_catalog) > 0:
+            death_tally = play_to_death( each[0], each[1], iterations, range_size, ship_catalog, death_tally )
+        else:
+            if fleet_survival_check(each[0], ship_catalog) == 0 and fleet_survival_check(each[1], ship_catalog) == 0:
+                death_tally[2] += 1
+                return death_tally
+            if fleet_survival_check(each[0], ship_catalog) == 0:
+                death_tally[0] += 1
+                return death_tally
+            if fleet_survival_check(each[1], ship_catalog) == 0:
+                death_tally[1] += 1
+                return death_tally
 
 
+# Import specified data:
 ship_catalog = import_json( ship_catalog_file )
+fleet1 = import_json( fleet_1_file )
+fleet2 = import_json( fleet_2_file )
 
-print play_round( fleet1, fleet2, iterations, range_size, ship_catalog )
+
+print play_to_death( fleet1, fleet2, iterations, range_size, ship_catalog, death_tally )
