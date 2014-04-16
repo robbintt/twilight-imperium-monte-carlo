@@ -3,6 +3,8 @@ import copy
 import random
 import json
 
+random.seed()
+
 # Rough tally for now.
 death_tally = [0,0,0]
 
@@ -42,6 +44,7 @@ def build_extra_hits ( fleet ):
     If this value is specified already, skip this.
     """
     if fleet['extra hits'] == "None": # Only do this if none are passed... use string "None" because json requires strings.
+        fleet['extra hits'] == 0
         fleet['extra hits'] = fleet.get('War Sun',0)+fleet.get('Dreadnought',0)+fleet.get('Custom Ship',0)
 
     return fleet
@@ -125,38 +128,57 @@ def fleet_survival_check( fleet, ship_catalog ):
     """
     If no ships remain that are in the catalog, then the fleet is destroyed.
     """
-
     surviving_ships = 0
     for each in ship_catalog.keys():
+        
         surviving_ships += fleet.get(each,0)
     
     return surviving_ships
 
 
-def play_to_death( fleet1, fleet2, iterations, range_size, ship_catalog, death_tally ):
-    
+def play_to_death( fleet1, fleet2, range_size, ship_catalog, death_tally ):
+   
+    while fleet_survival_check(fleet1, ship_catalog) > 0 and fleet_survival_check(fleet2, ship_catalog) > 0:
+        fleet1, fleet2 = play_round( fleet1, fleet2, range_size, ship_catalog )
+
+    if fleet_survival_check(fleet1, ship_catalog) == 0 and fleet_survival_check(fleet2, ship_catalog) == 0:
+        death_tally[2] += 1
+        return death_tally
+    elif fleet_survival_check(fleet1, ship_catalog) == 0:
+        death_tally[0] += 1
+        return death_tally
+    elif fleet_survival_check(fleet2, ship_catalog) == 0:
+        death_tally[1] += 1
+        return death_tally
+ 
+
+
+def monte_carlo_iterator(  fleet1, fleet2, iterations, range_size, ship_catalog, death_tally, fleet_1_file, fleet_2_file ):
+    """
+    Serve as the iterator or controller function.
+    """ 
+
+ 
     for i in range(iterations):
-        fleet1_temp = copy.deepcopy(fleet1)
-        fleet2_temp = copy.deepcopy(fleet2)
-        while fleet_survival_check(fleet1_temp, ship_catalog) > 0 and fleet_survival_check(fleet2_temp, ship_catalog) > 0:
-            fleet1_temp, fleet2_temp = play_round( fleet1_temp, fleet2_temp, range_size, ship_catalog )
-        if fleet_survival_check(fleet1_temp, ship_catalog) == 0 and fleet_survival_check(fleet2_temp, ship_catalog) == 0:
-            death_tally[2] += 1
-        elif fleet_survival_check(fleet1_temp, ship_catalog) == 0:
-            death_tally[0] += 1
-        elif fleet_survival_check(fleet2_temp, ship_catalog) == 0:
-            death_tally[1] += 1
-    return death_tally
+        fleet1 = import_json( fleet_1_file )
+        fleet2 = import_json( fleet_2_file )
+        death_tally = play_to_death( fleet1, fleet2, range_size, ship_catalog, death_tally )
+
+    print "Fleet 1 losses:", death_tally[0], death_tally[0] / decimal.Decimal(iterations) * 100, "percent."
+    print "Fleet 2 losses:", death_tally[1], death_tally[1] / decimal.Decimal(iterations) * 100, "percent."
+    print "Mutual Destruction:", death_tally[2], death_tally[2] / decimal.Decimal(iterations) * 100, "percent."
+
 
 # Import specified data:
 ship_catalog = import_json( ship_catalog_file )
 fleet1 = import_json( fleet_1_file )
 fleet2 = import_json( fleet_2_file )
 
+print "Ship Catalog:", ship_catalog
 
-loss_tally = play_to_death( fleet1, fleet2, iterations, range_size, ship_catalog, death_tally )
+print fleet1, "Fleet 1"
+print fleet2, "Fleet 2"
 
-print "Fleet 1 losses:", loss_tally[0], loss_tally[0] / decimal.Decimal(iterations) * 100, "percent."
-print "Fleet 2 losses:", loss_tally[1], loss_tally[1] / decimal.Decimal(iterations) * 100, "percent."
-print "Mutual Destruction:", loss_tally[2], loss_tally[2] / decimal.Decimal(iterations) * 100, "percent."
+
+monte_carlo_iterator(  fleet1, fleet2, iterations, range_size, ship_catalog, death_tally, fleet_1_file, fleet_2_file )
 
