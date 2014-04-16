@@ -19,7 +19,7 @@ range_size = 12 # define the size of the die
 def import_file ( target_file ):
 
     with open(target_file, 'r') as f:
-        file_string = file.load( f )
+        file_string = file.read( f )
     return file_string
 
 
@@ -153,15 +153,15 @@ def play_to_death( fleet1, fleet2, range_size, ship_catalog, death_tally ):
  
 
 
-def monte_carlo_iterator(  fleet1, fleet2, iterations, range_size, ship_catalog, death_tally, fleet_1_file, fleet_2_file ):
+def monte_carlo_iterator(  iterations, range_size, ship_catalog, death_tally, fleet1_s, fleet2_s ):
     """
     Serve as the iterator or controller function.
     """ 
 
  
     for i in range(iterations):
-        fleet1 = import_json( fleet_1_file )
-        fleet2 = import_json( fleet_2_file )
+        fleet1 = json.loads( fleet1_s )
+        fleet2 = json.loads( fleet2_s )
         death_tally = play_to_death( fleet1, fleet2, range_size, ship_catalog, death_tally )
 
     print "Fleet 1 losses:", death_tally[0], death_tally[0] / decimal.Decimal(iterations) * 100, "percent."
@@ -170,15 +170,17 @@ def monte_carlo_iterator(  fleet1, fleet2, iterations, range_size, ship_catalog,
 
 
 # Import specified data:
-ship_catalog = import_file( ship_catalog_file )
-fleet1 = import_file( fleet_1_file )
-fleet2 = import_file( fleet_2_file )
+ship_catalog_s = import_file( ship_catalog_file )
+ship_catalog_dict = json.loads( ship_catalog_s )
+print "Ship Catalog:", ship_catalog_dict
 
-print "Ship Catalog:", ship_catalog
-
-print fleet1, "Fleet 1"
-print fleet2, "Fleet 2"
+fleet1_s = import_file( fleet_1_file )
+fleet2_s = import_file( fleet_2_file )
 
 
-#monte_carlo_iterator(  fleet1, fleet2, iterations, range_size, ship_catalog, death_tally, fleet_1_file, fleet_2_file )
+print fleet1_s, "Fleet 1"
+print fleet2_s, "Fleet 2"
+
+
+monte_carlo_iterator(  iterations, range_size, ship_catalog_dict, death_tally, fleet1_s, fleet2_s )
 
