@@ -16,11 +16,11 @@ iterations = 10000
 range_size = 12 # define the size of the die
 
 
-def import_json ( target_file ):
+def import_file ( target_file ):
 
     with open(target_file, 'r') as f:
-        json_dict = json.load( f )
-    return json_dict
+        file_string = file.load( f )
+    return file_string
 
 
 def count_hits( prob_list, range_size ):
@@ -170,9 +170,9 @@ def monte_carlo_iterator(  fleet1, fleet2, iterations, range_size, ship_catalog,
 
 
 # Import specified data:
-ship_catalog = import_json( ship_catalog_file )
-fleet1 = import_json( fleet_1_file )
-fleet2 = import_json( fleet_2_file )
+ship_catalog = import_file( ship_catalog_file )
+fleet1 = import_file( fleet_1_file )
+fleet2 = import_file( fleet_2_file )
 
 print "Ship Catalog:", ship_catalog
 
@@ -180,5 +180,5 @@ print fleet1, "Fleet 1"
 print fleet2, "Fleet 2"
 
 
-monte_carlo_iterator(  fleet1, fleet2, iterations, range_size, ship_catalog, death_tally, fleet_1_file, fleet_2_file )
+#monte_carlo_iterator(  fleet1, fleet2, iterations, range_size, ship_catalog, death_tally, fleet_1_file, fleet_2_file )
 
