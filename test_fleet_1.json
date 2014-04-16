@@ -3,6 +3,6 @@
     "loss priority" : [ "Fighter","Destroyer","Carrier","Cruiser","Dreadnought","War Sun","Custom Ship" ],
     "extra hits" : "None",
     "hit priority": "sustain",
-    "Dreadnought" : 1 
+    "Dreadnought" : 5
 }
 

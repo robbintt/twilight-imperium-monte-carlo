@@ -1,7 +1,7 @@
 {
-    "probability of existence" : 1,
     "loss priority" : [ "Fighter","Destroyer","Carrier","Cruiser","Dreadnought","War Sun","Custom Ship" ],
     "extra hits" : "None",
     "hit priority": "protect",
-    "Carrier" : 1,
-    "Fighter" : 4 }
+    "Carrier" : 2,
+    "Fighter" : 12
+}
