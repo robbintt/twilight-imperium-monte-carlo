@@ -1,7 +1,7 @@
 {
     "loss priority" : [ "Fighter","Destroyer","Carrier","Cruiser","Dreadnought","War Sun","Custom Ship" ],
     "extra hits" : "None",
-    "hit priority" : "protect",
+    "hit priority" : "sustain",
     "Carrier" : 0,
     "Fighter" : 0,
     "Destroyer" : 0,
