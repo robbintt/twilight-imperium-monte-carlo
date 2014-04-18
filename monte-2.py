@@ -13,7 +13,7 @@ fleet_1_file = "./test_fleet_1.json"
 fleet_2_file = "./test_fleet_2.json"
 
 iterations = 10000
-range_size = 12 # define the size of the die
+range_size = 10 # define the size of the die
 
 
 def import_file ( target_file ):
