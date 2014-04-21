@@ -177,14 +177,15 @@ def monte_carlo_iterator(  iterations, range_size, ship_catalog, death_tally, fl
 # Import specified data:
 ship_catalog_s = import_file( ship_catalog_file )
 ship_catalog_dict = json.loads( ship_catalog_s )
-print "Ship Catalog:", ship_catalog_dict
+
+print "Ship Catalog:", ship_catalog_s
 
 fleet1_s = import_file( fleet_1_file )
 fleet2_s = import_file( fleet_2_file )
 
 
-print fleet1_s, "Fleet 1"
-print fleet2_s, "Fleet 2"
+print "Fleet 1:", fleet1_s 
+print "Fleet 2:", fleet2_s 
 
 
 monte_carlo_iterator(  iterations, range_size, ship_catalog_dict, death_tally, fleet1_s, fleet2_s )
