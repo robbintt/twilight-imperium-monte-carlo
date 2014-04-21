@@ -61,7 +61,7 @@ def generate_hit_prob_list( fleet, ship_catalog ):
     """
 
     hit_chances = []
-    for name, quantity in fleet.items():
+    for name in fleet.keys():
         '''
         This if block is awful, it is trading one problem for another.
         The problem it fixes is having non-ship keys in the fleet dicts.
@@ -71,14 +71,10 @@ def generate_hit_prob_list( fleet, ship_catalog ):
         that have the ship 'type'
         '''
         if name in ship_catalog.keys():
-            try:
-                hit_prob = ship_catalog[name]['to hit']
-            except:
-                raise
-
-            hit_chances += ( [hit_prob] * quantity * ship_catalog[name]['hits'] )
+            for i_values in range(fleet[name] * ship_catalog[name]['hits']):
+                hit_chances.append( ship_catalog[name]['to hit'] )
         else:
-            pass # skip keys in the fleet list that aren't ships... revamp this data format.
+            pass # skip keys in the fleet list that aren't ships... revamp this check.
 
     return hit_chances
 
