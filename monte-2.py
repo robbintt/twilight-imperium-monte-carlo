@@ -158,10 +158,16 @@ def monte_carlo_iterator(  iterations, range_size, ship_catalog, death_tally, fl
     Serve as the iterator or controller function.
     """ 
 
+    fleet1 = json.loads( fleet1_s )
+    fleet1_static = json.loads( fleet1_s )
+    fleet2 = json.loads( fleet2_s )
+    fleet2_static = json.loads( fleet2_s )
  
     for i in range(iterations):
-        fleet1 = json.loads( fleet1_s )
-        fleet2 = json.loads( fleet2_s )
+        for each in fleet1_static.keys():
+            fleet1[each] = fleet1_static[each]
+        for each in fleet2_static.keys():
+            fleet2[each] = fleet2_static[each]
         death_tally = play_to_death( fleet1, fleet2, range_size, ship_catalog, death_tally )
 
     print "Fleet 1 losses:", death_tally[0], death_tally[0] / decimal.Decimal(iterations) * 100, "percent."
