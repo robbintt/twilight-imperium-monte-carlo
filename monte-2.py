@@ -62,7 +62,6 @@ def generate_hit_prob_list( fleet, ship_catalog ):
 
     hit_chances = []
     for name, quantity in fleet.items():
-        name = name.encode('ascii','replace')
         '''
         This if block is awful, it is trading one problem for another.
         The problem it fixes is having non-ship keys in the fleet dicts.
