@@ -105,7 +105,7 @@ def generate_hit_prob_list( fleet ):
     return hit_chances
 
 
-def fleet_damage_outcomes( fleet, fleet1_hits ):
+def fleet_damage_outcomes( fleet, hits ):
 
     fleet = build_extra_hits( fleet )
 
@@ -113,17 +113,25 @@ def fleet_damage_outcomes( fleet, fleet1_hits ):
         
     # If we sustain, then sustain all hits first
     if fleet['hit priority'] == "sustain":
-        while fleet['extra hits'] > 0 and fleet1_hits > 0:
+        while fleet['extra hits'] > 0 and hits > 0:
             fleet['extra hits'] = fleet['extra hits'] - 1
-            fleet1_hits -= 1
+            hits -= 1
     for item in fleet['loss priority']: # Silently ends if fleet destroyed.
-        while fleet.get(item,0) > 0 and fleet1_hits > 0:
+        while fleet.get(item,0) > 0 and hits > 0:
             if item in [ "Dreadnought", "War Sun", "Custom Ship" ] and fleet['extra hits'] > 0:
                 fleet['extra hits'] = fleet['extra hits'] - 1
-                fleet1_hits -= 1
+                hits -= 1
             else:
-                fleet[item] = fleet[item] - 1
-                fleet1_hits -= 1
+                fleet[item] -= 1
+                hits -= 1
+    for item in [x for x in fleet['Ship Catalog'] if x not in fleet['loss priority']]:
+        while fleet.get(item,0) > 0 and hits > 0:
+            if item in [ "Dreadnought", "War Sun", "Custom Ship" ] and fleet['extra hits'] > 0:
+                fleet['extra hits'] = fleet['extra hits'] - 1
+                hits -= 1
+            else:
+                fleet[item] -= 1
+                hits -= 1
     return fleet
 
 

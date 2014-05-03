@@ -10,6 +10,9 @@
   "Dreadnought" : 0,
   "War Sun" : 0,
   "Custom Ship" : 0,
+  "Ground Force" : 0,
+  "Mechanized Unit" : 0,
+  "Shock Troop" : 0,
 
   "Ship Catalog":
   {
@@ -46,7 +49,22 @@
       "Custom Ship" :
     {   "model" : "Custom Ship",
         "to hit" : 5,
-        "hits" : 2 }
+        "hits" : 2 },
     
+      "Ground Force" :
+    {   "model" : "Ground Force",
+        "to hit" : 9,
+        "hits" : 1 },
+
+      "Mechanized Unit" :
+    {   "model" : "Mechanized Unit",
+        "to hit" : 6,
+        "hits" : 2 },
+
+      "Shock Troop" :
+    {   "model" : "Shock Troop",
+        "to hit" : 5,
+        "hits" : 1 }
+
     }
 }
