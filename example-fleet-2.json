@@ -1,4 +1,5 @@
 {
+  "name" : "Example Fleet 2",
   "loss priority" : [ "Fighter","Destroyer","Carrier","Cruiser","Dreadnought","War Sun","Custom Ship" ],
   "extra hits" : "None",
   "hit priority" : "sustain",

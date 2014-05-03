@@ -15,13 +15,19 @@ range_size = 10 # define the size of the die
 
 def parse_clargs ( args ):
 
-    file1 = "fleet-1.json"
-    file2 = "fleet-2.json"
+    file1 = ""
+    file2 = ""
 
     if len(args) >= 2:
         file1 = detect_json_extension( args[1] )
         if len(args) >= 3:
             file2 = detect_json_extension( args[2] )
+        else:
+            print "You must specify two fleets!"
+            exit(1)
+    else:
+        print "You must specify two fleets!"
+        exit(1)
 
     return file1, file2
 
@@ -187,12 +193,14 @@ def monte_carlo_iterator(  iterations, range_size, death_tally, fleet1_s, fleet2
             fleet2[each] = fleet2_static[each]
         death_tally = play_to_death( fleet1, fleet2, range_size, death_tally )
 
-    print "Fleet 1 losses:", death_tally[0], death_tally[0] / decimal.Decimal(iterations) * 100, "percent."
-    print "Fleet 2 losses:", death_tally[1], death_tally[1] / decimal.Decimal(iterations) * 100, "percent."
-    print "Mutual Destruction:", death_tally[2], death_tally[2] / decimal.Decimal(iterations) * 100, "percent."
+    fleet1_name = fleet1.get('name', "Fleet 1")
+    fleet2_name = fleet2.get('name', "Fleet 2")
 
-
-
+    print
+    print fleet1_name, "is destroyed:\t", death_tally[0] / decimal.Decimal(iterations) * 100, "percent of iterations.\t", death_tally[0]
+    print fleet2_name, "is destroyed:\t", death_tally[1] / decimal.Decimal(iterations) * 100, "percent of iterations.\t", death_tally[1]
+    print "Mutual Destruction:\t", death_tally[2] / decimal.Decimal(iterations) * 100, "percent of iterations.\t", death_tally[2]
+    print
 
 fleet_1_file, fleet_2_file = parse_clargs( sys.argv )
 
