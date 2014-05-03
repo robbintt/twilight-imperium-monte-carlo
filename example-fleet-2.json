@@ -31,12 +31,12 @@
       "Cruiser" :
     {   "model" : "Cruiser",
         "to hit" : 7,
-        "hits" : 2 },
+        "hits" : 1 },
     
       "Dreadnought" :
     {   "model" : "Dreadnought",
         "to hit" : 5,
-        "hits" : 1 },
+        "hits" : 2 },
     
       "War Sun" :
     {   "model" : "War Sun",
