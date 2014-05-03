@@ -1,3 +1,4 @@
+import sys
 import decimal
 import copy
 import random
@@ -5,15 +6,34 @@ import json
 
 random.seed()
 
-# Rough tally for now.
-death_tally = [0,0,0]
+iterations = 10000  # Quantity of test runs to produce
 
-ship_catalog_file = "./ship_models.json"
-fleet_1_file = "./test_fleet_1.json"
-fleet_2_file = "./test_fleet_2.json"
+death_tally = [0,0,0] # Initialize the deaths tally
 
-iterations = 10000
 range_size = 10 # define the size of the die
+
+
+def parse_clargs ( args ):
+
+    file1 = "fleet-1.json"
+    file2 = "fleet-2.json"
+
+    if len(args) >= 2:
+        file1 = detect_json_extension( args[1] )
+        if len(args) >= 3:
+            file2 = detect_json_extension( args[2] )
+
+    return file1, file2
+
+def detect_json_extension( any_string ):
+    
+    if len(any_string) >= 5:
+        if any_string[-5:] != ".json":
+            any_string += ".json"
+    else:
+        any_string += ".json"
+
+    return any_string
 
 
 def import_file ( target_file ):
@@ -23,7 +43,7 @@ def import_file ( target_file ):
     return file_string
 
 
-def count_hits( prob_list, range_size ):
+def count_hits ( prob_list, range_size ):
     """
     Randomly generate a count for hits.
     """
@@ -38,10 +58,9 @@ def count_hits( prob_list, range_size ):
 
 def build_extra_hits ( fleet ):
     """
-    Generate the extra hits for the fleet based on the number of ships
-    that can sustain damage.
+    You can prevent sustain damage for your whole fleet by specifying this value as 0 in your fleet data.
 
-    If this value is specified already, skip this.
+    This function will pass if extra hits is already set to any value other than None.
     """
     if fleet['extra hits'] == "None": # Only do this if none are passed... use string "None" because json requires strings.
         fleet['extra hits'] == 0
@@ -50,17 +69,18 @@ def build_extra_hits ( fleet ):
     return fleet
 
 
-def generate_hit_prob_list( fleet, ship_catalog ):
+def generate_hit_prob_list( fleet ):
     """
     Generate the list of possible hits from a fleet list.
-
-    The ship catalog is a dict of dicts imported from a json file.
 
     The fleet data type should be a dict using the ship name as a key and the ship
     quantity as a value.
     """
 
     hit_chances = []
+
+    ship_catalog = fleet['Ship Catalog']
+     
     for name in fleet.keys():
         '''
         This if block is awful, it is trading one problem for another.
@@ -79,7 +99,7 @@ def generate_hit_prob_list( fleet, ship_catalog ):
     return hit_chances
 
 
-def fleet_damage_outcomes( fleet, fleet1_hits, ship_catalog ):
+def fleet_damage_outcomes( fleet, fleet1_hits ):
 
     fleet = build_extra_hits( fleet )
 
@@ -101,54 +121,56 @@ def fleet_damage_outcomes( fleet, fleet1_hits, ship_catalog ):
     return fleet
 
 
-def play_round( fleet1, fleet2, range_size, ship_catalog ):
+def play_round( fleet1, fleet2, range_size ):
     """
     Run one round with two fleets.
     """
     
     # These lists of potential hits feed into the hitrange generators.
-    hitprob1 = generate_hit_prob_list( fleet1, ship_catalog )
-    hitprob2 = generate_hit_prob_list( fleet2, ship_catalog )
+    hitprob1 = generate_hit_prob_list( fleet1 )
+    hitprob2 = generate_hit_prob_list( fleet2 )
 
     fleet1_hits = count_hits( hitprob1, range_size )
     fleet2_hits = count_hits( hitprob2, range_size )
 
-    fleet1 = fleet_damage_outcomes( fleet1, fleet2_hits, ship_catalog )
-    fleet2 = fleet_damage_outcomes( fleet2, fleet1_hits, ship_catalog )
+    fleet1 = fleet_damage_outcomes( fleet1, fleet2_hits )
+    fleet2 = fleet_damage_outcomes( fleet2, fleet1_hits )
 
     return ( fleet1, fleet2 )
 
 
-def fleet_survival_check( fleet, ship_catalog ):
+def fleet_survival_check( fleet ):
     """
     If no ships remain that are in the catalog, then the fleet is destroyed.
     """
     surviving_ships = 0
-    for each in ship_catalog.keys():
+    for each in fleet['Ship Catalog'].keys():
         
         surviving_ships += fleet.get(each,0)
     
     return surviving_ships
 
 
-def play_to_death( fleet1, fleet2, range_size, ship_catalog, death_tally ):
+def play_to_death( fleet1, fleet2, range_size, death_tally ):
    
-    while fleet_survival_check(fleet1, ship_catalog) > 0 and fleet_survival_check(fleet2, ship_catalog) > 0:
-        fleet1, fleet2 = play_round( fleet1, fleet2, range_size, ship_catalog )
+    
 
-    if fleet_survival_check(fleet1, ship_catalog) == 0 and fleet_survival_check(fleet2, ship_catalog) == 0:
+    while fleet_survival_check(fleet1) > 0 and fleet_survival_check(fleet2) > 0:
+        fleet1, fleet2 = play_round( fleet1, fleet2, range_size )
+
+    if fleet_survival_check(fleet1) == 0 and fleet_survival_check(fleet2) == 0:
         death_tally[2] += 1
         return death_tally
-    elif fleet_survival_check(fleet1, ship_catalog) == 0:
+    elif fleet_survival_check(fleet1) == 0:
         death_tally[0] += 1
         return death_tally
-    elif fleet_survival_check(fleet2, ship_catalog) == 0:
+    elif fleet_survival_check(fleet2) == 0:
         death_tally[1] += 1
         return death_tally
  
 
 
-def monte_carlo_iterator(  iterations, range_size, ship_catalog, death_tally, fleet1_s, fleet2_s ):
+def monte_carlo_iterator(  iterations, range_size, death_tally, fleet1_s, fleet2_s ):
     """
     Serve as the iterator or controller function.
     """ 
@@ -163,26 +185,20 @@ def monte_carlo_iterator(  iterations, range_size, ship_catalog, death_tally, fl
             fleet1[each] = fleet1_static[each]
         for each in fleet2_static.keys():
             fleet2[each] = fleet2_static[each]
-        death_tally = play_to_death( fleet1, fleet2, range_size, ship_catalog, death_tally )
+        death_tally = play_to_death( fleet1, fleet2, range_size, death_tally )
 
     print "Fleet 1 losses:", death_tally[0], death_tally[0] / decimal.Decimal(iterations) * 100, "percent."
     print "Fleet 2 losses:", death_tally[1], death_tally[1] / decimal.Decimal(iterations) * 100, "percent."
     print "Mutual Destruction:", death_tally[2], death_tally[2] / decimal.Decimal(iterations) * 100, "percent."
 
 
+
+
+fleet_1_file, fleet_2_file = parse_clargs( sys.argv )
+
 # Import specified data:
-ship_catalog_s = import_file( ship_catalog_file )
-ship_catalog_dict = json.loads( ship_catalog_s )
-
-print "Ship Catalog:", ship_catalog_s
-
 fleet1_s = import_file( fleet_1_file )
 fleet2_s = import_file( fleet_2_file )
 
-
-print "Fleet 1:", fleet1_s 
-print "Fleet 2:", fleet2_s 
-
-
-monte_carlo_iterator(  iterations, range_size, ship_catalog_dict, death_tally, fleet1_s, fleet2_s )
+monte_carlo_iterator(  iterations, range_size, death_tally, fleet1_s, fleet2_s )
 
