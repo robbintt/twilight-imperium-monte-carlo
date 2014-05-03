@@ -3,7 +3,9 @@
 HOW TO RUN THE APPLICATION:
 ===========================
 $ python twilight.py fleets/example-fleet-1 fleets/example-fleet-2
+
 (you can leave the .json extension in and use tab completion if you wish)
+
 This will run the application on the example fleets, which you can modify as you wish or use as templates and rename.
 
 =============
