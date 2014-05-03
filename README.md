@@ -20,7 +20,7 @@ UNDERSTANDING THE FLEET FILE:
 =============================
 1. The name can be whatever you want.
 2. The filename should be something easy to remember.
-3. The "loss priority" recommends what should get hit first. Leftmost dies first. Any unit not on this listwill be randomly killed after the whole "loss priority" list has been exhausted.
+3. The "loss priority" recommends what should get hit first. Leftmost dies first. Any unit not on this list will be randomly killed after the whole "loss priority" list has been exhausted.
 4. Generally set "hit priotity" to "sustain". sustain/protect signifies whether multi-hit ships sustain before the hit prioritization list comes into effect. More information is below in Additional notes.
 
 ====================
