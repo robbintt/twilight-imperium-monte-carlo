@@ -6,7 +6,7 @@
   "Carrier" : 0,
   "Fighter" : 0,
   "Destroyer" : 0,
-  "Cruiser" : 4,
+  "Cruiser" : 3,
   "Dreadnought" : 0,
   "War Sun" : 0,
   "Capital Ship" : 0,
@@ -30,7 +30,7 @@
     
       "Cruiser" :
     {   "model" : "Cruiser",
-        "to hit" : 7,
+        "to hit" : 6,
         "hits" : 1 },
     
       "Dreadnought" :

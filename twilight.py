@@ -204,10 +204,14 @@ def monte_carlo_iterator(  iterations, range_size, death_tally, fleet1_s, fleet2
     fleet1_name = fleet1.get('name', "Fleet 1")
     fleet2_name = fleet2.get('name', "Fleet 2")
 
+    ## Decimal shorthand
+    def mkdec( s ):
+        return decimal.Decimal(s)
+
     print
-    print fleet1_name, "is destroyed:\t", death_tally[0] / decimal.Decimal(iterations) * 100, "percent of iterations.\t", death_tally[0]
-    print fleet2_name, "is destroyed:\t", death_tally[1] / decimal.Decimal(iterations) * 100, "percent of iterations.\t", death_tally[1]
-    print "Mutual Destruction:\t", death_tally[2] / decimal.Decimal(iterations) * 100, "percent of iterations.\t", death_tally[2]
+    print "%.0f%% - '%s' destroyed. (%d)." % ( death_tally[0] / mkdec(iterations) * 100, fleet1_name, death_tally[0])
+    print "%.0f%% - '%s' destroyed. (%d)." % ( death_tally[1] / mkdec(iterations) * 100, fleet2_name, death_tally[1])
+    print "%.0f%% -  Mutual Destruction. (%d)." % ( death_tally[2] / mkdec(iterations) * 100, death_tally[2])
     print
 
 fleet_1_file, fleet_2_file = parse_clargs( sys.argv )
