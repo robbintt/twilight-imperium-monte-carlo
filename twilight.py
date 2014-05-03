@@ -70,7 +70,7 @@ def build_extra_hits ( fleet ):
     """
     if fleet['extra hits'] == "None": # Only do this if none are passed... use string "None" because json requires strings.
         fleet['extra hits'] == 0
-        fleet['extra hits'] = fleet.get('War Sun',0)+fleet.get('Dreadnought',0)+fleet.get('Custom Ship',0)
+        fleet['extra hits'] = fleet.get('War Sun',0)+fleet.get('Dreadnought',0)+fleet.get('Capital Ship',0)+fleet.get('Mechanized Unit',0)
 
     return fleet
 
@@ -85,20 +85,20 @@ def generate_hit_prob_list( fleet ):
 
     hit_chances = []
 
-    ship_catalog = fleet['Ship Catalog']
+    catalog = fleet['Catalog']
      
     for name in fleet.keys():
         '''
         This if block is awful, it is trading one problem for another.
         The problem it fixes is having non-ship keys in the fleet dicts.
-        The problem it creates is collisions between the ship_catalog and fleet dicts.
+        The problem it creates is collisions between the catalog and fleet dicts.
         Simple solution is shape the fleet like a dict and have 'type' specified in
         both the fleet and catalog dictionaries, then take a cross section of items
         that have the ship 'type'
         '''
-        if name in ship_catalog.keys():
-            for i_values in range(fleet[name] * ship_catalog[name]['hits']):
-                hit_chances.append( ship_catalog[name]['to hit'] )
+        if name in catalog.keys():
+            for i_values in range(fleet[name] * catalog[name]['hits']):
+                hit_chances.append( catalog[name]['to hit'] )
         else:
             pass # skip keys in the fleet list that aren't ships... revamp this check.
 
@@ -118,15 +118,15 @@ def fleet_damage_outcomes( fleet, hits ):
             hits -= 1
     for item in fleet['loss priority']: # Silently ends if fleet destroyed.
         while fleet.get(item,0) > 0 and hits > 0:
-            if item in [ "Dreadnought", "War Sun", "Custom Ship" ] and fleet['extra hits'] > 0:
+            if item in [ "Dreadnought", "War Sun", "Capital Ship", "Mechanized Unit" ] and fleet['extra hits'] > 0:
                 fleet['extra hits'] = fleet['extra hits'] - 1
                 hits -= 1
             else:
                 fleet[item] -= 1
                 hits -= 1
-    for item in [x for x in fleet['Ship Catalog'] if x not in fleet['loss priority']]:
+    for item in [x for x in fleet['Catalog'] if x not in fleet['loss priority']]:
         while fleet.get(item,0) > 0 and hits > 0:
-            if item in [ "Dreadnought", "War Sun", "Custom Ship" ] and fleet['extra hits'] > 0:
+            if item in [ "Dreadnought", "War Sun", "Capital Ship", "Mechanized Unit" ] and fleet['extra hits'] > 0:
                 fleet['extra hits'] = fleet['extra hits'] - 1
                 hits -= 1
             else:
@@ -158,7 +158,7 @@ def fleet_survival_check( fleet ):
     If no ships remain that are in the catalog, then the fleet is destroyed.
     """
     surviving_ships = 0
-    for each in fleet['Ship Catalog'].keys():
+    for each in fleet['Catalog'].keys():
         
         surviving_ships += fleet.get(each,0)
     

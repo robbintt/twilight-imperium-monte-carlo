@@ -1,6 +1,6 @@
 {
   "name" : "Example Fleet 2",
-  "loss priority" : [ "Fighter","Destroyer","Carrier","Cruiser","Dreadnought","War Sun","Custom Ship" ],
+  "loss priority" : [ "Fighter","Destroyer","Carrier","Cruiser","Dreadnought","War Sun","Capital Ship", "Shock Troop", "Ground Force", "Mechanized Unit" ],
   "extra hits" : "None",
   "hit priority" : "sustain",
   "Carrier" : 2,
@@ -9,12 +9,12 @@
   "Cruiser" : 0,
   "Dreadnought" : 0,
   "War Sun" : 0,
-  "Custom Ship" : 0,
+  "Capital Ship" : 0,
   "Ground Force" : 0,
   "Mechanized Unit" : 0,
   "Shock Troop" : 0,
 
-  "Ship Catalog":
+  "Catalog":
   {
         "Carrier" :
     {   "model" : "Carrier",
@@ -46,8 +46,8 @@
         "to hit" : 3,
         "hits" : 3 },
     
-      "Custom Ship" :
-    {   "model" : "Custom Ship",
+      "Capital Ship" :
+    {   "model" : "Capital Ship",
         "to hit" : 5,
         "hits" : 2 },
     
