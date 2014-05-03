@@ -2,7 +2,7 @@
 ===========================
 HOW TO RUN THE APPLICATION:
 ===========================
-$ python twilight.py example-fleet-1 example-fleet-2
+$ python twilight.py fleets/example-fleet-1 fleets/example-fleet-2
 
 This will run the application on the example fleets, which you can modify as you wish or use as templates and rename.
 
