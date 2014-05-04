@@ -110,7 +110,6 @@ def fleet_damage_outcomes( fleet, hits ):
     fleet = build_extra_hits( fleet )
 
     # Use a hit prioritization method to calculate remaining possible fleets.
-        
     # If we sustain, then sustain all hits first
     if fleet['hit priority'] == "sustain":
         while fleet['extra hits'] > 0 and hits > 0:
@@ -139,13 +138,32 @@ def play_round( fleet1, fleet2, range_size ):
     """
     Run one round with two fleets.
     """
+
+    # Set initial hits values
+    fleet1_hits = 0
+    fleet2_hits = 0
     
     # These lists of potential hits feed into the hitrange generators.
     hitprob1 = generate_hit_prob_list( fleet1 )
     hitprob2 = generate_hit_prob_list( fleet2 )
 
-    fleet1_hits = count_hits( hitprob1, range_size )
-    fleet2_hits = count_hits( hitprob2, range_size )
+
+    # Add initial strikes to the hitprob list, and zero them out for this fleet.
+    if len(fleet1.get('Initial Strikes', [])) > 0:
+        hitprob1 += count_hits( fleet1.get('Initial Strikes', []), range_size )
+        fleet1['Initial Strikes'] = []
+    if len(fleet2.get('Initial Strikes', [])) > 0:
+        hitprob2 += count_hits( fleet2.get('Initial Strikes', []), range_size )
+        fleet2['Initial Strikes'] = []
+
+    # Append any 'extra hits' to the hit prob list EVERY ROUND!
+    if len(fleet1.get('Extra Hits',[])) > 0:
+        hitprob1 += fleet1.get('Extra Hits',[])
+    if len(fleet2.get('Extra Hits',[])) > 0:
+        hitprob2 += fleet2.get('Extra Hits',[])
+
+    fleet1_hits += count_hits( hitprob1, range_size )
+    fleet2_hits += count_hits( hitprob2, range_size )
 
     fleet1 = fleet_damage_outcomes( fleet1, fleet2_hits )
     fleet2 = fleet_damage_outcomes( fleet2, fleet1_hits )
@@ -183,7 +201,6 @@ def play_to_death( fleet1, fleet2, range_size, death_tally ):
         return death_tally
  
 
-
 def monte_carlo_iterator(  iterations, range_size, death_tally, fleet1_s, fleet2_s ):
     """
     Serve as the iterator or controller function.
@@ -194,6 +211,7 @@ def monte_carlo_iterator(  iterations, range_size, death_tally, fleet1_s, fleet2
     fleet2 = json.loads( fleet2_s )
     fleet2_static = json.loads( fleet2_s )
  
+    # Reset each value each iteration.  This is huge improvement over doing copy.deepcopy() 20000 times or using the json_loads() 20000 times.
     for i in range(iterations):
         for each in fleet1_static.keys():
             fleet1[each] = fleet1_static[each]
@@ -205,6 +223,9 @@ def monte_carlo_iterator(  iterations, range_size, death_tally, fleet1_s, fleet2
     fleet2_name = fleet2.get('name', "Fleet 2")
 
     ## Decimal shorthand
+    ## Decimals are used below before converting to floats, this isn't strictly necessary right now.
+    ## Originally the numbers weren't printed as floats. Displaying a decimal type as float should prevent
+    ## a truncated float value like 1.999999999999999999998=1.9 which is obviously BAD.
     def mkdec( s ):
         return decimal.Decimal(s)
 
