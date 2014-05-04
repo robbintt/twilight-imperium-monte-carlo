@@ -39,7 +39,7 @@
       "Dreadnought" :
     {   "model" : "Dreadnought",
         "to hit" : 5,
-        "hits" : 2 },
+        "hits" : 1 },
     
       "War Sun" :
     {   "model" : "War Sun",

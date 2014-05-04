@@ -1,11 +1,11 @@
 {
-  "name" : "Example Fleet 2",
+  "name" : "1xDestroyer +1",
   "loss priority" : [ "Fighter","Destroyer","Carrier","Cruiser","Dreadnought","War Sun","Capital Ship", "Shock Troop", "Ground Force", "Mechanized Unit" ],
   "extra hits" : "None",
   "hit priority" : "sustain",
-  "Carrier" : 2,
-  "Fighter" : 6,
-  "Destroyer" : 0,
+  "Carrier" : 0,
+  "Fighter" : 0,
+  "Destroyer" : 1,
   "Cruiser" : 0,
   "Dreadnought" : 0,
   "War Sun" : 0,
@@ -28,7 +28,7 @@
     
       "Destroyer" :
     {   "model" : "Destroyer",
-        "to hit" : 9,
+        "to hit" : 8,
         "hits" : 1 },
     
       "Cruiser" :
