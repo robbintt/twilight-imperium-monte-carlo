@@ -150,10 +150,10 @@ def play_round( fleet1, fleet2, range_size ):
 
     # Add initial strikes to the hitprob list, and zero them out for this fleet.
     if len(fleet1.get('Initial Strikes', [])) > 0:
-        hitprob1 += count_hits( fleet1.get('Initial Strikes', []), range_size )
+        hitprob1 += fleet1.get('Initial Strikes', [])
         fleet1['Initial Strikes'] = []
     if len(fleet2.get('Initial Strikes', [])) > 0:
-        hitprob2 += count_hits( fleet2.get('Initial Strikes', []), range_size )
+        hitprob2 += fleet2.get('Initial Strikes', [])
         fleet2['Initial Strikes'] = []
 
     # Append any 'extra hits' to the hit prob list EVERY ROUND!

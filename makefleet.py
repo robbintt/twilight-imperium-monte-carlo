@@ -52,6 +52,8 @@ def init_fleet():
     
     fleet = {
     "name" : "DEFAULT FLEET NAME",
+    "Initial Strikes" : [],
+    "Extra Hits" : [],
     "loss priority" : [ "Fighter","Destroyer","Carrier","Cruiser","Dreadnought","War Sun","Capital Ship", "Shock Troop", "Ground Force", "Mechanized Unit" ],
     "extra hits" : "None",
     "hit priority" : "sustain",

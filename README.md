@@ -8,7 +8,15 @@ $ python makefleet.py
 Input your fleet name, the number of ships, and the filename.
 You can edit this file in any text editor.
 
+Special Case:
+If you have pre-battle hits, ongoing hits from a source your ships don't account for, there are two lists of integers you can use.
+Inside your fleet file, you want to change the value for either 'Initial Strikes' or 'Extra Hits' from its default of empty, [], to
+whatever dice rolls you expect. For example, if you want to add two strikes from PDS, then change 'Initial Strikes' from [] to [6,6]
 
+
+xxx
+This still doesn't account for the 'reroll on fail' ability that some fleets and PDS can have. SPECIAL CASES AHHHHGGGHHH.
+xxx
 
 ===========================
 HOW TO RUN THE APPLICATION:
