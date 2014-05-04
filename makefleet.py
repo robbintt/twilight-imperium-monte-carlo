@@ -5,6 +5,21 @@ Take standard input and generate a properly formatted fleet.
 """
 
 
+import json
+
+
+
+def json_exporter( object1, file_name ):
+
+    with open( str(file_name)+'.json', 'w') as f:
+        json.dump( object1, f, indent=2, separators=(',',':') )
+    
+
+def retrieve_raw_input( text_string ):
+
+    input_value = int( raw_input(text_string) )
+    
+    return input_value
 
 
 def get_user_input( fleet ):
@@ -15,26 +30,27 @@ def get_user_input( fleet ):
 
     fleet['name'] = raw_input('Name:')
 
-    fleet['Carrier'] = raw_input('# of Carriers:')
-    fleet['Fighter'] = raw_input('# of Fighters:')
-    fleet['Destroyer'] = raw_input('# of Destroyers:')
-    fleet['Cruiser'] = raw_input('# of Cruisers')
-    fleet['Dreadnought'] = raw_input('# of Dreadnoughts')
-    fleet['War Sun'] = raw_input('# of War Suns')
-    fleet['Capital Ship'] = raw_input('# of Flagships')
-    fleet['Ground Force'] = raw_input('# of GFs')
-    fleet['Mechanized Unit'] = raw_input('# of Mechanized Units')
-    fleet['Shock Troop'] = raw_input('# of Shock Troops')
+    fleet['Carrier'] = retrieve_raw_input('# of Carriers:')
+    fleet['Fighter'] = retrieve_raw_input('# of Fighters:')
+    fleet['Destroyer'] = retrieve_raw_input('# of Destroyers:')
+    fleet['Cruiser'] = retrieve_raw_input('# of Cruisers:')
+    fleet['Dreadnought'] = retrieve_raw_input('# of Dreadnoughts:')
+    fleet['War Sun'] = retrieve_raw_input('# of War Suns:')
+    fleet['Capital Ship'] = retrieve_raw_input('# of Flagships:')
+    fleet['Ground Force'] = retrieve_raw_input('# of GFs:')
+    fleet['Mechanized Unit'] = retrieve_raw_input('# of Mechanized Units:')
+    fleet['Shock Troop'] = retrieve_raw_input('# of Shock Troops:')
 
-    print fleet
+    file_name = raw_input('Select a filename, do not include the extension:')
 
+    json_exporter( fleet, file_name )
 
 def init_fleet():
     """
     Initialize a default empty fleet.
     """
     
-    catalog = {
+    fleet = {
     "name" : "DEFAULT FLEET NAME",
     "loss priority" : [ "Fighter","Destroyer","Carrier","Cruiser","Dreadnought","War Sun","Capital Ship", "Shock Troop", "Ground Force", "Mechanized Unit" ],
     "extra hits" : "None",
@@ -100,11 +116,11 @@ def init_fleet():
       "Shock Troop" :
     {   "model" : "Shock Troop",
         "to hit" : 5,
-        "hits" : 1 }
-
-    } }
+        "hits" : 1 } } 
+    }
     
     return fleet
+
 
 
 get_user_input( init_fleet() )

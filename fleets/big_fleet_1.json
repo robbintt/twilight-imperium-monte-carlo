@@ -1,0 +1,79 @@
+{
+  "Capital Ship":0,
+  "Fighter":6,
+  "Destroyer":1,
+  "Mechanized Unit":0,
+  "Carrier":2,
+  "Dreadnought":1,
+  "Cruiser":1,
+  "name":"Big Fleet 1",
+  "loss priority":[
+    "Fighter",
+    "Destroyer",
+    "Carrier",
+    "Cruiser",
+    "Dreadnought",
+    "War Sun",
+    "Capital Ship",
+    "Shock Troop",
+    "Ground Force",
+    "Mechanized Unit"
+  ],
+  "Shock Troop":0,
+  "Ground Force":0,
+  "War Sun":0,
+  "hit priority":"sustain",
+  "Catalog":{
+    "Mechanized Unit":{
+      "hits":2,
+      "model":"Mechanized Unit",
+      "to hit":6
+    },
+    "Capital Ship":{
+      "hits":2,
+      "model":"Capital Ship",
+      "to hit":5
+    },
+    "Carrier":{
+      "hits":1,
+      "model":"Carrier",
+      "to hit":9
+    },
+    "Fighter":{
+      "hits":1,
+      "model":"Fighter",
+      "to hit":9
+    },
+    "Cruiser":{
+      "hits":1,
+      "model":"Cruiser",
+      "to hit":7
+    },
+    "Destroyer":{
+      "hits":1,
+      "model":"Destroyer",
+      "to hit":9
+    },
+    "Shock Troop":{
+      "hits":1,
+      "model":"Shock Troop",
+      "to hit":5
+    },
+    "Ground Force":{
+      "hits":1,
+      "model":"Ground Force",
+      "to hit":9
+    },
+    "Dreadnought":{
+      "hits":1,
+      "model":"Dreadnought",
+      "to hit":5
+    },
+    "War Sun":{
+      "hits":3,
+      "model":"War Sun",
+      "to hit":3
+    }
+  },
+  "extra hits":"None"
+}
