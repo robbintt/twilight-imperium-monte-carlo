@@ -24,11 +24,13 @@ def retrieve_raw_input( text_string ):
 
 def get_user_input( fleet ):
     """
-    Get user input into a dict and pass it along.
+    Get user input and export it.
     """
 
 
     fleet['name'] = raw_input('Name:')
+    file_name = raw_input('Select a filename, do not include the extension:')
+
 
     fleet['Carrier'] = retrieve_raw_input('# of Carriers:')
     fleet['Fighter'] = retrieve_raw_input('# of Fighters:')
@@ -40,8 +42,6 @@ def get_user_input( fleet ):
     fleet['Ground Force'] = retrieve_raw_input('# of GFs:')
     fleet['Mechanized Unit'] = retrieve_raw_input('# of Mechanized Units:')
     fleet['Shock Troop'] = retrieve_raw_input('# of Shock Troops:')
-
-    file_name = raw_input('Select a filename, do not include the extension:')
 
     json_exporter( fleet, file_name )
 

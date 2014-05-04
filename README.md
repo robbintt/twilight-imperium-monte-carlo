@@ -1,5 +1,16 @@
 
 ===========================
+HOW TO MAKE A FLEET: (easy)
+===========================
+
+$ python makefleet.py
+
+Input your fleet name, the number of ships, and the filename.
+You can edit this file in any text editor.
+
+
+
+===========================
 HOW TO RUN THE APPLICATION:
 ===========================
 $ python twilight.py fleets/example-fleet-1 fleets/example-fleet-2
