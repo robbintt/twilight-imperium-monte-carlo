@@ -118,19 +118,39 @@ def fleet_damage_outcomes( fleet, hits ):
     for item in fleet['loss priority']: # Silently ends if fleet destroyed.
         while fleet.get(item,0) > 0 and hits > 0:
             if item in [ "Dreadnought", "War Sun", "Capital Ship", "Mechanized Unit" ] and fleet['extra hits'] > 0:
-                fleet['extra hits'] = fleet['extra hits'] - 1
-                hits -= 1
+                # Subtract hits all at once, not allowing to apply more than extra hits.
+                if fleet['extra hits'] >= hits:
+                    fleet['extra hits'] -= hits
+                    hits -= hits
+                else:
+                    fleet['extra hits'] = 0
+                    hits -= fleet['extra hits']
             else:
-                fleet[item] -= 1
-                hits -= 1
+                # Subtract hits all at once, not allowing to apply more than extra hits.
+                if fleet[item] >= hits:
+                    fleet[item] -= hits
+                    hits -= hits
+                else:
+                    fleet[item] = 0
+                    hits -= fleet[item]
     for item in [x for x in fleet['Catalog'] if x not in fleet['loss priority']]:
         while fleet.get(item,0) > 0 and hits > 0:
             if item in [ "Dreadnought", "War Sun", "Capital Ship", "Mechanized Unit" ] and fleet['extra hits'] > 0:
-                fleet['extra hits'] = fleet['extra hits'] - 1
-                hits -= 1
+                # Subtract hits all at once, not allowing to apply more than extra hits.
+                if fleet['extra hits'] >= hits:
+                    fleet['extra hits'] -= hits
+                    hits -= hits
+                else:
+                    fleet['extra hits'] = 0
+                    hits -= fleet['extra hits']
             else:
-                fleet[item] -= 1
-                hits -= 1
+                # Subtract hits all at once, not allowing to apply more than extra hits.
+                if fleet[item] >= hits:
+                    fleet[item] -= hits
+                    hits -= hits
+                else:
+                    fleet[item] = 0
+                    hits -= fleet[item]
     return fleet
 
 
@@ -186,17 +206,22 @@ def fleet_survival_check( fleet ):
 def play_to_death( fleet1, fleet2, range_size, death_tally ):
    
     
+    fleet1_surv = fleet_survival_check(fleet1)
+    fleet2_surv = fleet_survival_check(fleet2)
 
-    while fleet_survival_check(fleet1) > 0 and fleet_survival_check(fleet2) > 0:
+    while fleet1_surv > 0 and fleet2_surv > 0:
         fleet1, fleet2 = play_round( fleet1, fleet2, range_size )
+        fleet1_surv = fleet_survival_check(fleet1)
+        fleet2_surv = fleet_survival_check(fleet2)
+        
 
-    if fleet_survival_check(fleet1) == 0 and fleet_survival_check(fleet2) == 0:
+    if fleet1_surv == 0 and fleet2_surv == 0:
         death_tally[2] += 1
         return death_tally
-    elif fleet_survival_check(fleet1) == 0:
+    elif fleet1_surv == 0:
         death_tally[0] += 1
         return death_tally
-    elif fleet_survival_check(fleet2) == 0:
+    elif fleet2_surv == 0:
         death_tally[1] += 1
         return death_tally
  
