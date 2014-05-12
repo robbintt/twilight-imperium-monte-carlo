@@ -4,6 +4,7 @@ import copy
 import random
 import json
 
+
 random.seed()
 
 iterations = 10000  # Quantity of test runs to produce
@@ -87,20 +88,9 @@ def generate_hit_prob_list( fleet ):
 
     catalog = fleet['Catalog']
      
-    for name in fleet.keys():
-        '''
-        This if block is awful, it is trading one problem for another.
-        The problem it fixes is having non-ship keys in the fleet dicts.
-        The problem it creates is collisions between the catalog and fleet dicts.
-        Simple solution is shape the fleet like a dict and have 'type' specified in
-        both the fleet and catalog dictionaries, then take a cross section of items
-        that have the ship 'type'
-        '''
-        if name in catalog.keys():
-            for i_values in range(fleet[name] * catalog[name]['hits']):
-                hit_chances.append( catalog[name]['to hit'] )
-        else:
-            pass # skip keys in the fleet list that aren't ships... revamp this check.
+    for name in catalog.keys():
+        for i_values in range(fleet[name] * catalog[name]['hits']):
+            hit_chances.append( catalog[name]['to hit'] )
 
     return hit_chances
 
