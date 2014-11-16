@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 """
 
 Take standard input and generate a properly formatted fleet.
@@ -17,7 +18,16 @@ def json_exporter( object1, file_name ):
 
 def retrieve_raw_input( text_string ):
 
-    input_value = int( raw_input(text_string) )
+    input_value = "sentinel value"
+    while type(input_value) is not int:
+        input_value = raw_input(text_string)
+        if input_value == "":
+            input_value = 0
+        try:
+            input_value = int(input_value)
+        except:
+            print "Please only enter integers."
+
     
     return input_value
 
@@ -124,6 +134,6 @@ def init_fleet():
     return fleet
 
 
-
+print "You may enter nothing instead of a zero."
 get_user_input( init_fleet() )
 
