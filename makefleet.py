@@ -117,7 +117,7 @@ def init_fleet():
     
       "Ground Force" :
     {   "model" : "Ground Force",
-        "to hit" : 9,
+        "to hit" : 8,
         "hits" : 1 },
 
       "Mechanized Unit" :
